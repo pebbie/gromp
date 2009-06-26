@@ -200,7 +200,11 @@ procedure TfrmTile.DrawTool;
 begin
   with Image3.Picture.Bitmap.Canvas do begin
     if mode = 1 then begin
-      Image1.Picture.Bitmap.Canvas.Pixels[p2.X div scale, p2.Y div scale] := curcol.Brush.Color;
+      Image1.Picture.Bitmap.Canvas.Pen.Color := curcol.Brush.Color;
+      Image1.Picture.Bitmap.Canvas.Pen.Style := psSolid;
+      Image1.Picture.Bitmap.Canvas.MoveTo(p1.X div scale, p1.Y div scale);
+      Image1.Picture.Bitmap.Canvas.LineTo(p2.X div scale, p2.Y div scale);
+      p1 := p2;      
     end;
     Lock;
     FillRect( Image3.ClientRect );
