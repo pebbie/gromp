@@ -1,7 +1,7 @@
 object main: Tmain
   Left = 189
   Top = 105
-  Width = 914
+  Width = 992
   Height = 611
   Caption = 'GDI RPG Maker'
   Color = clBtnFace
@@ -15,27 +15,27 @@ object main: Tmain
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter2: TSplitter
-    Left = 353
+    Left = 321
     Top = 44
     Height = 502
   end
   object Panel1: TPanel
     Left = 0
     Top = 44
-    Width = 353
+    Width = 321
     Height = 502
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
     object Splitter1: TSplitter
-      Left = 145
+      Left = 129
       Top = 0
       Height = 502
     end
     object tv: TTreeView
       Left = 0
       Top = 0
-      Width = 145
+      Width = 129
       Height = 502
       Align = alLeft
       AutoExpand = True
@@ -54,9 +54,9 @@ object main: Tmain
         000000000000000474696C65}
     end
     object lv: TListView
-      Left = 148
+      Left = 132
       Top = 0
-      Width = 205
+      Width = 189
       Height = 502
       Align = alClient
       Columns = <
@@ -74,9 +74,9 @@ object main: Tmain
     end
   end
   object editorPanel: TPanel
-    Left = 356
+    Left = 324
     Top = 44
-    Width = 550
+    Width = 660
     Height = 502
     Align = alClient
     BevelOuter = bvNone
@@ -85,7 +85,7 @@ object main: Tmain
   object sb: TStatusBar
     Left = 0
     Top = 546
-    Width = 906
+    Width = 984
     Height = 19
     Panels = <
       item
@@ -104,7 +104,7 @@ object main: Tmain
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
-    Width = 906
+    Width = 984
     Height = 44
     ButtonHeight = 38
     ButtonWidth = 39
