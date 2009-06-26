@@ -1,6 +1,6 @@
 object main: Tmain
-  Left = 192
-  Top = 107
+  Left = 189
+  Top = 105
   Width = 914
   Height = 611
   Caption = 'GDI RPG Maker'
@@ -87,7 +87,19 @@ object main: Tmain
     Top = 546
     Width = 906
     Height = 19
-    Panels = <>
+    Panels = <
+      item
+        Width = 250
+      end
+      item
+        Width = 180
+      end
+      item
+        Width = 120
+      end
+      item
+        Width = 50
+      end>
   end
   object ToolBar1: TToolBar
     Left = 0

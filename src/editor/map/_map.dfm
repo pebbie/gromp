@@ -36,7 +36,7 @@ object frmMap: TfrmMap
         Height = 447
         Style = lbOwnerDrawFixed
         Align = alRight
-        ItemHeight = 96
+        ItemHeight = 48
         PopupMenu = ppTileLib
         TabOrder = 0
         OnDrawItem = lbTilesDrawItem
