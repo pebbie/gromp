@@ -3,7 +3,7 @@ object frmTile: TfrmTile
   Top = 110
   Align = alClient
   BorderStyle = bsNone
-  Caption = 'frmTile'
+  Caption = 'Tile'
   ClientHeight = 471
   ClientWidth = 858
   Color = clBtnFace
@@ -30,7 +30,7 @@ object frmTile: TfrmTile
       object ScrollBox1: TScrollBox
         Left = 0
         Top = 42
-        Width = 802
+        Width = 752
         Height = 403
         Align = alClient
         Color = clGray
@@ -55,23 +55,6 @@ object frmTile: TfrmTile
           OnMouseUp = Image3MouseUp
         end
       end
-      object ScrollBox2: TScrollBox
-        Left = 802
-        Top = 42
-        Width = 48
-        Height = 403
-        Align = alRight
-        BorderStyle = bsNone
-        TabOrder = 1
-        object Image2: TImage
-          Left = 0
-          Top = 0
-          Width = 32
-          Height = 1024
-          AutoSize = True
-          OnMouseDown = Image2MouseDown
-        end
-      end
       object ToolBar1: TToolBar
         Left = 0
         Top = 0
@@ -84,7 +67,7 @@ object frmTile: TfrmTile
         Images = main.appicon
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 2
+        TabOrder = 1
         object SaveTile: TToolButton
           Left = 0
           Top = 2
@@ -177,6 +160,40 @@ object frmTile: TfrmTile
           Width = 38
           Height = 38
           Pen.Style = psClear
+        end
+      end
+      object Panel1: TPanel
+        Left = 752
+        Top = 42
+        Width = 98
+        Height = 403
+        Align = alRight
+        TabOrder = 2
+        object Image4: TImage
+          Left = 1
+          Top = 113
+          Width = 96
+          Height = 32
+          Align = alTop
+        end
+        object ScrollBox2: TScrollBox
+          Left = 1
+          Top = 1
+          Width = 96
+          Height = 112
+          HorzScrollBar.Increment = 96
+          Align = alTop
+          BorderStyle = bsNone
+          TabOrder = 0
+          object Image2: TImage
+            Left = 0
+            Top = 0
+            Width = 576
+            Height = 96
+            AutoSize = True
+            OnMouseDown = Image2MouseDown
+            OnMouseMove = Image2MouseMove
+          end
         end
       end
     end

@@ -105,6 +105,7 @@ begin
   if od.Execute then begin
     sd.FileName := od.FileName;
     rootdir := od.InitialDir+'\'+ChangeFileExt(ExtractFileName(od.FileName), '');
+    sb.Panels[0].Text := rootdir;
     rpg := TIniFile.Create(od.FileName);
     tv.Enabled := True;
     tv.FullExpand;
@@ -136,6 +137,7 @@ begin
   sd.InitialDir := ExtractFilePath(Application.ExeName)+'games';
   if sd.Execute then begin
     rootdir := sd.InitialDir+'\'+ChangeFileExt(ExtractFileName(sd.FileName), '');
+    sb.Panels[0].Text := rootdir;
     ForceDirectories(rootdir);
     ForceDirectories(rootdir+'\image');
     ForceDirectories(rootdir+'\map');
@@ -161,7 +163,6 @@ begin
       if frmTile.Parent = nil then
       frmTile.parent := editorPanel;
       frmTile.Show;
-      sb.SimpleText := rootdir;
       lv.SmallImages := ImageList2;
       ReadListViewDir(rootdir+'\image', lv);
       lv.PopupMenu := ppTile;

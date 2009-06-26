@@ -90,7 +90,7 @@ MaxStackSize=1048576
 ImageBase=4194304
 ExeDescription=
 [Directories]
-OutputDir=..\..\
+OutputDir=..\..\..\
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
@@ -141,6 +141,7 @@ Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 Count=1
 Item0=..\..\lib\
 [HistoryLists\hlOutputDirectorry]
-Count=2
-Item0=..\..\
-Item1=..\
+Count=3
+Item0=..\..\..\
+Item1=..\..\
+Item2=..\

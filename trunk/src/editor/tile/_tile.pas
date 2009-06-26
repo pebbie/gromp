@@ -39,6 +39,8 @@ type
     curcol: TShape;
     ToolButton10: TToolButton;
     ToolButton11: TToolButton;
+    Image4: TImage;
+    Panel1: TPanel;
     procedure ToolButton6Click( Sender: TObject );
     procedure ToolButton8Click( Sender: TObject );
     procedure SaveTileClick( Sender: TObject );
@@ -55,7 +57,9 @@ type
     procedure ToolButton2Click( Sender: TObject );
     procedure ToolButton4Click( Sender: TObject );
     procedure ToolButton5Click( Sender: TObject );
-    procedure ToolButton9Click( Sender: TObject ); //current image
+    procedure ToolButton9Click( Sender: TObject );
+    procedure Image2MouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer); //current image
   private
     { Private declarations }
 
@@ -185,6 +189,7 @@ end;
 procedure TfrmTile.Image3MouseMove( Sender: TObject; Shift: TShiftState; X,
   Y: Integer );
 begin
+  main.sb.Panels[2].Text := format('X:%3d Y:%3d', [X div scale, Y div scale]);
   if bdown then begin
     p2 := Point( X, Y );
     DrawTool;
@@ -198,7 +203,7 @@ begin
       Image1.Picture.Bitmap.Canvas.Pixels[p2.X div scale, p2.Y div scale] := curcol.Brush.Color;
     end;
     Lock;
-    FillRect(Image3.ClientRect);
+    FillRect( Image3.ClientRect );
     if mode = 2 then begin
       MoveTo( p1.X div scale, p1.Y div scale );
       LineTo( p2.X div scale, p2.Y div scale );
@@ -220,20 +225,24 @@ var
 procedure TfrmTile.FormCreate( Sender: TObject );
 var
   r, g, b           : byte;
-  y                 : integer;
+  y, x              : integer;
 begin
   //setup properties
   Image3.ControlStyle := Image3.ControlStyle + [csOpaque];
   //draw palette
   Image2.Canvas.Pen.Style := psClear;
-  Image2.Picture.Bitmap.Height := 216 * 32;
-  y := 215;
+  x := 0;
+  y := 0;
   for r := 0 to 5 do
     for g := 0 to 5 do
       for b := 0 to 5 do begin
         Image2.Canvas.Brush.Color := RGB( colhex[r], colhex[g], colhex[b] );
-        Image2.Canvas.Rectangle( 0, y * 32, 31, ( y + 1 ) * 32 );
-        dec( y );
+        Image2.Canvas.Rectangle( x * 16, y * 16, ( x + 1 ) * 16, ( y + 1 ) * 16 );
+        inc( y );
+        if y > 5 then begin
+          y := 0;
+          inc( x );
+        end;
       end;
 
   Image3.Canvas.Pen.Style := psClear;
@@ -285,10 +294,22 @@ begin
     Pen.Style := psClear;
     FillRect( Image3.ClientRect );
   end;
-  if mode=2 then begin
+  if mode = 2 then begin
     Image3.Canvas.Pen.Style := psSolid;
     Image3.Canvas.Pen.Color := curcol.Brush.Color;
   end;
+end;
+
+procedure TfrmTile.Image2MouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+var
+  p : tColor;
+  tmp : string;
+begin
+  p := Image2.Canvas.Pixels[X,Y];
+  tmp := format('R:%.3d G:%.3d B:%.3d',[GetRValue(p), GetGValue(p), GetBValue(p)]);
+  if tmp <> main.sb.Panels[1].Text then
+    main.sb.Panels[1].Text := tmp;
 end;
 
 end.
