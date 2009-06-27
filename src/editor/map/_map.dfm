@@ -62,9 +62,9 @@ object frmMap: TfrmMap
         TabOrder = 2
         object ScrollBox1: TScrollBox
           Left = 1
-          Top = 43
+          Top = 41
           Width = 586
-          Height = 403
+          Height = 405
           Align = alClient
           TabOrder = 0
           object Image1: TImage
@@ -82,15 +82,16 @@ object frmMap: TfrmMap
           Left = 1
           Top = 1
           Width = 586
-          Height = 42
+          Height = 40
           ButtonHeight = 38
           ButtonWidth = 39
           Caption = 'ToolBar1'
+          Flat = True
           Images = main.appicon
           TabOrder = 1
           object SaveMap: TToolButton
             Left = 0
-            Top = 2
+            Top = 0
             Hint = 'Save Map'
             Caption = 'SaveMap'
             ImageIndex = 2
@@ -98,7 +99,7 @@ object frmMap: TfrmMap
           end
           object ToolButton2: TToolButton
             Left = 39
-            Top = 2
+            Top = 0
             Width = 8
             Caption = 'ToolButton2'
             ImageIndex = 1
@@ -106,15 +107,15 @@ object frmMap: TfrmMap
           end
           object ToolButton3: TToolButton
             Left = 47
-            Top = 2
+            Top = 0
             Hint = 'Pencil'
             Caption = 'ToolButton3'
-            ImageIndex = 6
+            ImageIndex = 12
             OnClick = ToolButton3Click
           end
           object ToolButton4: TToolButton
             Left = 86
-            Top = 2
+            Top = 0
             Hint = 'Erase'
             Caption = 'ToolButton4'
             ImageIndex = 9
@@ -122,14 +123,15 @@ object frmMap: TfrmMap
           end
           object ToolButton5: TToolButton
             Left = 125
-            Top = 2
+            Top = 0
             Hint = 'Fill'
             Caption = 'ToolButton5'
+            ImageIndex = 13
             OnClick = ToolButton5Click
           end
           object ToolButton6: TToolButton
             Left = 164
-            Top = 2
+            Top = 0
             Width = 8
             Caption = 'ToolButton6'
             ImageIndex = 4
@@ -137,7 +139,7 @@ object frmMap: TfrmMap
           end
           object ToolButton7: TToolButton
             Left = 172
-            Top = 2
+            Top = 0
             Hint = 'Zoom Out'
             Caption = 'ToolButton7'
             ImageIndex = 4
@@ -145,7 +147,7 @@ object frmMap: TfrmMap
           end
           object ToolButton8: TToolButton
             Left = 211
-            Top = 2
+            Top = 0
             Hint = 'Zoom In'
             Caption = 'ToolButton8'
             ImageIndex = 5
@@ -153,7 +155,7 @@ object frmMap: TfrmMap
           end
           object ToolButton9: TToolButton
             Left = 250
-            Top = 2
+            Top = 0
             Hint = 'Reset Zoom'
             Caption = 'ToolButton9'
             ImageIndex = 3
@@ -161,7 +163,7 @@ object frmMap: TfrmMap
           end
           object ToolButton10: TToolButton
             Left = 289
-            Top = 2
+            Top = 0
             Width = 8
             Caption = 'ToolButton10'
             ImageIndex = 7

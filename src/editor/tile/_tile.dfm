@@ -1,6 +1,6 @@
 object frmTile: TfrmTile
-  Left = 192
-  Top = 110
+  Left = 367
+  Top = 170
   Align = alClient
   BorderStyle = bsNone
   Caption = 'Tile'
@@ -29,9 +29,9 @@ object frmTile: TfrmTile
       Caption = 'Tile'
       object ScrollBox1: TScrollBox
         Left = 0
-        Top = 42
+        Top = 40
         Width = 752
-        Height = 403
+        Height = 405
         Align = alClient
         Color = clGray
         ParentColor = False
@@ -59,26 +59,27 @@ object frmTile: TfrmTile
         Left = 0
         Top = 0
         Width = 850
-        Height = 42
+        Height = 40
         ButtonHeight = 38
         ButtonWidth = 39
         Caption = 'ToolBar1'
         EdgeBorders = []
+        Flat = True
         Images = main.appicon
         ParentShowHint = False
         ShowHint = True
         TabOrder = 1
         object SaveTile: TToolButton
           Left = 0
-          Top = 2
+          Top = 0
           Hint = 'Save Tile'
           Caption = 'Save'
-          ImageIndex = 2
+          ImageIndex = 15
           OnClick = SaveTileClick
         end
         object ToolButton3: TToolButton
           Left = 39
-          Top = 2
+          Top = 0
           Width = 8
           Caption = 'ToolButton3'
           ImageIndex = 2
@@ -86,37 +87,39 @@ object frmTile: TfrmTile
         end
         object ToolButton10: TToolButton
           Left = 47
-          Top = 2
+          Top = 0
           Hint = 'Pick Color'
           Caption = 'ToolButton10'
+          ImageIndex = 14
           OnClick = ToolButton10Click
         end
         object ToolButton2: TToolButton
           Left = 86
-          Top = 2
+          Top = 0
           Hint = 'Pencil'
           Caption = 'ToolButton2'
-          ImageIndex = 6
+          ImageIndex = 12
           OnClick = ToolButton2Click
         end
         object ToolButton4: TToolButton
           Left = 125
-          Top = 2
+          Top = 0
           Hint = 'Line'
           Caption = 'ToolButton4'
-          ImageIndex = 11
+          ImageIndex = 16
           OnClick = ToolButton4Click
         end
         object ToolButton5: TToolButton
           Left = 164
-          Top = 2
+          Top = 0
           Hint = 'Fill'
           Caption = 'ToolButton5'
+          ImageIndex = 13
           OnClick = ToolButton5Click
         end
         object ToolButton7: TToolButton
           Left = 203
-          Top = 2
+          Top = 0
           Width = 8
           Caption = 'ToolButton7'
           ImageIndex = 5
@@ -124,7 +127,7 @@ object frmTile: TfrmTile
         end
         object ToolButton6: TToolButton
           Left = 211
-          Top = 2
+          Top = 0
           Hint = 'Zoom Out'
           Caption = 'ToolButton6'
           ImageIndex = 4
@@ -132,7 +135,7 @@ object frmTile: TfrmTile
         end
         object ToolButton8: TToolButton
           Left = 250
-          Top = 2
+          Top = 0
           Hint = 'Zoom In'
           Caption = 'ToolButton8'
           ImageIndex = 5
@@ -140,7 +143,7 @@ object frmTile: TfrmTile
         end
         object ToolButton9: TToolButton
           Left = 289
-          Top = 2
+          Top = 0
           Hint = 'Reset Zoom'
           Caption = 'ToolButton9'
           ImageIndex = 3
@@ -148,7 +151,7 @@ object frmTile: TfrmTile
         end
         object ToolButton11: TToolButton
           Left = 328
-          Top = 2
+          Top = 0
           Width = 8
           Caption = 'ToolButton11'
           ImageIndex = 7
@@ -156,7 +159,7 @@ object frmTile: TfrmTile
         end
         object curcol: TShape
           Left = 336
-          Top = 2
+          Top = 0
           Width = 38
           Height = 38
           Pen.Style = psClear
@@ -164,9 +167,9 @@ object frmTile: TfrmTile
       end
       object Panel1: TPanel
         Left = 752
-        Top = 42
+        Top = 40
         Width = 98
-        Height = 403
+        Height = 405
         Align = alRight
         TabOrder = 2
         object Image4: TImage

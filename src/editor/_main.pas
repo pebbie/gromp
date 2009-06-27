@@ -159,6 +159,7 @@ begin
     frmTile.Hide;
     frmMap.Hide;
     lv.PopupMenu := nil;
+    lv.OnClick := nil;
     if tv.Selected.Text = 'tile' then begin
       if frmTile.Parent = nil then
       frmTile.parent := editorPanel;
@@ -166,6 +167,7 @@ begin
       lv.SmallImages := ImageList2;
       ReadListViewDir(rootdir+'\image', lv);
       lv.PopupMenu := ppTile;
+      lv.OnClick := Open1Click;
     end else if tv.Selected.Text = 'map' then begin
       if frmMap.Parent = nil then
       frmMap.Parent := editorPanel;
@@ -175,8 +177,8 @@ begin
       b := TBitmap.Create;
       appicon.GetBitmap(10, b);
       b2 := TBitmap.Create;
-      b2.Width := 64;
-      b2.Height := 64;
+      b2.Width := lv.SmallImages.Width;
+      b2.Height := lv.SmallImages.Height;
       b2.Canvas.StretchDraw(Bounds(0,0,b2.Width,b2.Height), b);
       lv.SmallImages.Add(b2, nil);
       b2.Free;
@@ -184,6 +186,7 @@ begin
 
       DirListView(rootdir+'\map', lv);
       lv.PopupMenu := ppMap;
+      lv.OnClick := Open2Click;
     end else if tv.Selected.Text = 'sprite' then begin
       lv.SmallImages := ImageList2;
       ReadListViewDir(rootdir+'\sprite', lv);
