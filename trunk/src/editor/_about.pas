@@ -4,10 +4,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs;
+  Dialogs, StdCtrls;
 
 type
   TfrmAbout = class(TForm)
+    Memo1: TMemo;
   private
     { Private declarations }
   public

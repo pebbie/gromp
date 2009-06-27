@@ -15,4 +15,19 @@ object frmAbout: TfrmAbout
   Position = poMainFormCenter
   PixelsPerInch = 96
   TextHeight = 13
+  object Memo1: TMemo
+    Left = 8
+    Top = 152
+    Width = 289
+    Height = 89
+    Lines.Strings = (
+      'Thanks to:'
+      'GDI http://www.gamedevid.org'
+      'Google Code http://code.google.com/p/gromp'
+      ''
+      'programming pe-e-be@GDI'
+      'icons alijaya@GDI')
+    ReadOnly = True
+    TabOrder = 0
+  end
 end

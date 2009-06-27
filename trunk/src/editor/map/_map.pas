@@ -20,9 +20,55 @@ uses
   CheckLst,
   ToolWin,
   Menus,
-  inifiles;
+  inifiles,
+  Contnrs;
 
 type
+  TMap = class;
+  TMapLayer = class
+  protected
+    FPos: array of array of integer;
+    FTiles: TObjectList;
+    FTileFilenames: TStrings;
+    FName: string;
+    FFilename: string;
+    FID: string;
+    FParent: TMap;
+    FVisible: Boolean;
+    procedure SetName( newName: string );
+  public
+    constructor Create( Parent: TMap; id: string; w, h: integer );
+    destructor Free;
+
+    procedure save( filename: string );
+    procedure load( filename: string );
+    procedure resize( nw, nh: integer );
+
+    property Name: string read FName write setName;
+    property Visible: boolean read FVisible write FVisible default True;
+  end;
+
+  TMap = class
+  protected
+    FWidth, FHeight: integer;
+    FLayers: TObjectList;
+    FFilename: string;
+    FData: TIniFile;
+    procedure SetFilename( newFilename: string );
+  public
+    constructor Create( w, h: integer ); overload;
+    constructor Create( filename: string ); overload;
+    destructor Free;
+
+    procedure Resize( newWidth, newHeight: integer );
+
+    procedure AddLayer(layername:string='');
+
+    property Filename: string read FFilename write SetFilename;
+    property Width: integer read FWidth;
+    property Height: integer read FHeight;
+  end;
+
   TfrmMap = class( TForm )
     ScrollBox1: TScrollBox;
     lbTiles: TListBox;
@@ -81,12 +127,12 @@ type
     procedure ToolButton3Click( Sender: TObject );
     procedure ToolButton4Click( Sender: TObject );
     procedure ToolButton5Click( Sender: TObject );
-    procedure SaveMapClick(Sender: TObject);
-    procedure Import1Click(Sender: TObject);
-    procedure NewLayer1Click(Sender: TObject);
+    procedure SaveMapClick( Sender: TObject );
+    procedure Import1Click( Sender: TObject );
+    procedure NewLayer1Click( Sender: TObject );
   private
     { Private declarations }
-    procedure resize( nw, nh: integer );
+    procedure resizemap( nw, nh: integer );
     procedure clean;
     procedure setup;
     procedure redraw;
@@ -172,7 +218,7 @@ begin
   end;
 end;
 
-procedure TfrmMap.resize( nw, nh: integer );
+procedure TfrmMap.resizemap( nw, nh: integer );
 var
   j, i, k           : integer;
   oh, ow            : integer;
@@ -354,9 +400,9 @@ begin
           redraw;
         end;
       2: begin
-        flood(layers.ItemIndex, lbTiles.ItemIndex, X div scale div tilesize, Y div scale div tilesize);
-        redraw;
-      end;
+          flood( layers.ItemIndex, lbTiles.ItemIndex, X div scale div tilesize, Y div scale div tilesize );
+          redraw;
+        end;
     end;
 end;
 
@@ -374,8 +420,8 @@ begin
     p2 := Point( X, Y );
     if ( layers.ItemIndex > -1 ) and ( lbTiles.ItemIndex > -1 ) then begin
       case mode of
-      0:tlayers[layers.ItemIndex][Y div scale div tilesize][X div scale div tilesize] := lbTiles.ItemIndex;
-      1:tlayers[layers.ItemIndex][Y div scale div tilesize][X div scale div tilesize] := -1;
+        0: tlayers[layers.ItemIndex][Y div scale div tilesize][X div scale div tilesize] := lbTiles.ItemIndex;
+        1: tlayers[layers.ItemIndex][Y div scale div tilesize][X div scale div tilesize] := -1;
       end;
       redraw;
     end;
@@ -435,112 +481,258 @@ begin
     while ( y1 > 0 ) and ( tlayers[layerid][y1 - 1][p.X] = col ) do
       dec( y1 );
     y2 := p.Y;
-    while ( y2 < mh-1 ) and ( tlayers[layerid][y2 + 1][p.X] = col ) do
+    while ( y2 < mh - 1 ) and ( tlayers[layerid][y2 + 1][p.X] = col ) do
       inc( y2 );
     //showmessage(format('y1 %d y2 %d', [y1, y2]));
-    sl := false; sr := false;
+    sl := false;
+    sr := false;
     for yy := y1 to y2 do begin
       if p.X > 0 then begin
-        if not sl and  (tlayers[layerid][yy][p.X-1]=col) then begin
+        if not sl and ( tlayers[layerid][yy][p.X - 1] = col ) then begin
           sl := true;
-          push(p.X-1, yy);
-        end else if sl and not (tlayers[layerid][yy][p.X-1]=col) then
-          sl := false;
+          push( p.X - 1, yy );
+        end
+        else
+          if sl and not ( tlayers[layerid][yy][p.X - 1] = col ) then
+            sl := false;
       end;
-      if p.X < mw-1 then begin
-        if not sr and  (tlayers[layerid][yy][p.X+1]=col) then begin
+      if p.X < mw - 1 then begin
+        if not sr and ( tlayers[layerid][yy][p.X + 1] = col ) then begin
           sr := true;
-          push(p.X+1, yy);
-        end else if sr and not (tlayers[layerid][yy][p.X+1]=col) then
-          sr := false;
+          push( p.X + 1, yy );
+        end
+        else
+          if sr and not ( tlayers[layerid][yy][p.X + 1] = col ) then
+            sr := false;
       end;
       tlayers[layerid][yy][p.X] := value;
     end;
   end;
 end;
 
-procedure TfrmMap.SaveMapClick(Sender: TObject);
+procedure TfrmMap.SaveMapClick( Sender: TObject );
 var
-  j, i : integer;
-  l,ln: TStrings;
+  j, i              : integer;
+  l, ln             : TStrings;
 begin
   if layers.ItemIndex = -1 then exit;
   l := TStringlist.Create;
   ln := TStringlist.Create;
 
-  for j := 0 to high(tlayers[layers.itemIndex]) do begin
+  for j := 0 to high( tlayers[layers.itemIndex] ) do begin
     ln.Clear;
-    for i := 0 to high(tlayers[layers.itemIndex][j]) do begin
-      ln.Add(inttostr(tlayers[layers.ItemIndex][j][i]));      
+    for i := 0 to high( tlayers[layers.itemIndex][j] ) do begin
+      ln.Add( inttostr( tlayers[layers.ItemIndex][j][i] ) );
     end;
-    l.Add(ln.CommaText);
+    l.Add( ln.CommaText );
   end;
-  
-  l.SaveToFile(dirname+'\map'+inttostr(layers.itemIndex)+'.map');
+
+  l.SaveToFile( dirname + '\map' + inttostr( layers.itemIndex ) + '.map' );
   ln.Free;
   l.Free;
 end;
 
-procedure TfrmMap.Import1Click(Sender: TObject);
+procedure TfrmMap.Import1Click( Sender: TObject );
 var
-  s : TStrings;
-  tname : string;
-  bmp : TBitmap;
+  s                 : TStrings;
+  tname             : string;
+  bmp               : TBitmap;
 begin
-  main.opd.InitialDir := rootdir+'\image\';
+  main.opd.InitialDir := rootdir + '\image\';
   if main.opd.Execute then begin
-    setlength(tlayertiles[layers.itemIndex], length(tlayertiles[layers.itemIndex])+1);
-    bmp := citra_load(main.opd.FileName);
-    tlayertiles[layers.ItemIndex][high(tlayertiles[layers.ItemIndex])] := bmp;
-    
-    setlength(tmpbmp, length(tmpbmp)+1);
-    tmpbmp[high(tmpbmp)] := citra_create(lbTiles.ItemHeight, lbTiles.ItemHeight,bmp.PixelFormat);
-    tmpbmp[high(tmpbmp)].Canvas.StretchDraw(Bounds(0, 0, lbTiles.ItemHeight, lbTiles.ItemHeight), bmp);
+    setlength( tlayertiles[layers.itemIndex], length( tlayertiles[layers.itemIndex] ) + 1 );
+    bmp := citra_load( main.opd.FileName );
+    tlayertiles[layers.ItemIndex][high( tlayertiles[layers.ItemIndex] )] := bmp;
 
-    lbTiles.AddItem('', tmpbmp[high(tmpbmp)]);
+    setlength( tmpbmp, length( tmpbmp ) + 1 );
+    tmpbmp[high( tmpbmp )] := citra_create( lbTiles.ItemHeight, lbTiles.ItemHeight, bmp.PixelFormat );
+    tmpbmp[high( tmpbmp )].Canvas.StretchDraw( Bounds( 0, 0, lbTiles.ItemHeight, lbTiles.ItemHeight ), bmp );
+
+    lbTiles.AddItem( '', tmpbmp[high( tmpbmp )] );
 
     s := TStringlist.Create;
-    s.CommaText := map.ReadString('layer'+inttostr(layers.ItemIndex), 'tiles', '');
-    tname := ExtractFileName(main.opd.FileName);
-    s.Add(tname);
-    map.WriteString('layer'+inttostr(layers.ItemIndex), 'tiles', s.CommaText);
+    s.CommaText := map.ReadString( 'layer' + inttostr( layers.ItemIndex ), 'tiles', '' );
+    tname := ExtractFileName( main.opd.FileName );
+    s.Add( tname );
+    map.WriteString( 'layer' + inttostr( layers.ItemIndex ), 'tiles', s.CommaText );
     map.UpdateFile;
     s.Free;
   end;
 end;
 
-procedure TfrmMap.NewLayer1Click(Sender: TObject);
+procedure TfrmMap.NewLayer1Click( Sender: TObject );
 {
   reports:
   http://www.gamedevid.org/forum/showpost.php?p=102117&postcount=23
 }
 var
-  j, i, k : integer;
+  j, i, k           : integer;
 begin
-  layers.Items.Add('layer'+inttostr(layers.Count));
-  layers.Checked[layers.Count-1] := True;
+  layers.Items.Add( 'layer' + inttostr( layers.Count ) );
+  layers.Checked[layers.Count - 1] := True;
 
-  map.WriteInteger('map', 'numlayer', layers.Count);
-  map.WriteString('layer'+inttostr(layers.Count-1), 'name', 'layer'+inttostr(layers.Count-1));
-  map.WriteString('layer'+inttostr(layers.Count-1), 'tiles', '');
+  map.WriteInteger( 'map', 'numlayer', layers.Count );
+  map.WriteString( 'layer' + inttostr( layers.Count - 1 ), 'name', 'layer' + inttostr( layers.Count - 1 ) );
+  map.WriteString( 'layer' + inttostr( layers.Count - 1 ), 'tiles', '' );
   map.UpdateFile;
 
-  setlength(tlayers, length(tlayers)+1);
-  j := high(tlayers);
-  setlength(tlayers[j], mh);
-  for i := 0 to high(tlayers[j]) do begin
-    setlength(tlayers[j][i], mw);
-    for k := 0 to high(tlayers[j][i]) do begin
+  setlength( tlayers, length( tlayers ) + 1 );
+  j := high( tlayers );
+  setlength( tlayers[j], mh );
+  for i := 0 to high( tlayers[j] ) do begin
+    setlength( tlayers[j][i], mw );
+    for k := 0 to high( tlayers[j][i] ) do begin
       tlayers[j][i][k] := -1;
     end;
   end;
 
-  setlength(tlayertiles, length(tlayers));
-  setlength(tlayertiles[j], 0);
+  setlength( tlayertiles, length( tlayers ) );
+  setlength( tlayertiles[j], 0 );
 
   layers.ItemIndex := j;
-  SaveMapClick(nil);
-  layersClick(nil);
+  SaveMapClick( nil );
+  layersClick( nil );
+end;
+
+{ TMap }
+
+constructor TMap.Create( w, h: integer );
+begin
+  FLayers := TObjectlist.Create( True );
+  Resize( w, h );
+end;
+
+procedure TMap.AddLayer(layername: string);
+var
+  layer : TMapLayer;
+begin
+  if layername='' then layername := 'layer'+inttostr(FLayers.Count);
+  layer := TMapLayer.Create(self, 'layer'+inttostr(FLayers.Count), FWidth, FHeight);
+
+  layer.FFilename := '';
+  FLayers.Add(layer);
+  FData.WriteInteger('map', 'numlayer', FLayers.Count);
+  FData.UpdateFile;  
+end;
+
+constructor TMap.Create( filename: string );
+begin
+  FLayers := TObjectlist.Create( True );
+  self.Filename := filename;
+end;
+
+destructor TMap.Free;
+begin
+  FLayers.Free;
+  if Assigned(FData) then
+    FData.Free;
+end;
+
+procedure TMap.Resize( newWidth, newHeight: integer );
+var
+  j : integer;
+begin
+  for j := 0 to FLayers.Count-1 do
+    (FLayers[j] as TMapLayer).resize(newWidth, newHeight);
+  FData.WriteInteger('map', 'width', newWidth);
+  FData.WriteInteger('map', 'height', newHeight);
+  if (newWidth <> FWidth) or (newHeight <> FHeight) then
+    FData.UpdateFile;
+  FWidth := newWidth;
+  FHeight := newHeight;
+end;
+
+procedure TMap.SetFilename( newFilename: string );
+begin
+  if Assigned( FData ) then FData.Free;
+
+  FData := TIniFile.Create( filename );
+end;
+
+{ TMapLayer }
+
+constructor TMapLayer.Create( Parent: TMap; id: string; w, h: integer );
+begin
+  FID := id;
+  FTiles := TObjectList.Create( True );
+  FTileFilenames := TStringlist.Create;
+  resize( w, h );
+end;
+
+destructor TMapLayer.Free;
+begin
+  FTiles.Free;
+  FTileFilenames.Free;
+end;
+
+procedure TMapLayer.load( filename: string );
+var
+  s, l              : TStrings;
+  i, j              : integer;
+begin
+  FFilename := filename;
+  s := TStringlist.Create;
+  l := TStringlist.Create;
+  s.LoadFromFile( FFilename );
+
+  for j := 0 to high( FPos ) do begin
+    l.CommaText := s[j];
+    for i := 0 to High( FPos[j] ) do begin
+      FPos[j][i] := StrToInt( l[i] );
+    end;
+  end;
+
+  l.Free;
+  s.Free;
+end;
+
+procedure TMapLayer.resize( nw, nh: integer );
+var
+  j, i : integer;
+  ow,oh : integer;
+begin
+  oh := length(FPos);
+  ow := length(FPos[0]);
+  setlength(FPos, nh);
+  for j := 0 to high(FPos) do begin
+    setlength(FPos[j], nw);
+    if nw > ow then
+      for i := ow to nw-1 do
+        FPos[j][i] := -1;
+  end;
+  if nh > oh then
+    for j := oh to nh-1 do
+      for i := 0 to nw-1 do
+        FPos[j][i] := -1;
+end;
+
+procedure TMapLayer.save;
+var
+  s, l              : TStrings;
+  i, j              : integer;
+begin
+  s := TStringlist.Create;
+  l := TStringlist.Create;
+
+  for j := 0 to high( FPos ) do begin
+    l.Clear;
+    for i := 0 to High( FPos[j] ) do begin
+      l.Add( Inttostr( FPos[j][i] ) );
+    end;
+    s.Add( l.CommaText );
+  end;
+
+  s.SaveToFile( FFilename );
+  l.Free;
+  s.Free;
+end;
+
+procedure TMapLayer.SetName( newName: string );
+begin
+  FParent.FData.WriteString( FID, 'name', newName );
+  if newName <> FName then
+    FParent.FData.UpdateFile;
+  FName := newName;
 end;
 
 end.
