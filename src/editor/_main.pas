@@ -57,7 +57,6 @@ type
     N3: TMenuItem;
     Import1: TMenuItem;
     New1: TMenuItem;
-    open2: TMenuItem;
     N4: TMenuItem;
     Help1: TMenuItem;
     About1: TMenuItem;
@@ -74,6 +73,7 @@ type
     procedure Remove1Click(Sender: TObject);
     procedure open2Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
+    procedure DeleteMap1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -164,7 +164,7 @@ begin
       if frmTile.Parent = nil then
       frmTile.parent := editorPanel;
       frmTile.Show;
-      lv.SmallImages := ImageList2;
+      lv.SmallImages.Clear;
       ReadListViewDir(rootdir+'\image', lv);
       lv.PopupMenu := ppTile;
       lv.OnClick := Open1Click;
@@ -173,9 +173,9 @@ begin
       frmMap.Parent := editorPanel;
       frmMap.Show;
       lv.SmallImages.Clear;
-      
+
       b := TBitmap.Create;
-      appicon.GetBitmap(10, b);
+      Imagelist1.GetBitmap(2, b);
       b2 := TBitmap.Create;
       b2.Width := lv.SmallImages.Width;
       b2.Height := lv.SmallImages.Height;
@@ -188,7 +188,18 @@ begin
       lv.PopupMenu := ppMap;
       lv.OnClick := Open2Click;
     end else if tv.Selected.Text = 'sprite' then begin
-      lv.SmallImages := ImageList2;
+      lv.SmallImages.Clear;
+
+      b := TBitmap.Create;
+      Imagelist1.GetBitmap(3, b);
+      b2 := TBitmap.Create;
+      b2.Width := lv.SmallImages.Width;
+      b2.Height := lv.SmallImages.Height;
+      b2.Canvas.StretchDraw(Bounds(0,0,b2.Width,b2.Height), b);
+      lv.SmallImages.Add(b2, nil);
+      b2.Free;
+      b.Free;
+
       ReadListViewDir(rootdir+'\sprite', lv);
       lv.PopupMenu := ppSprite;
     end else if tv.Selected.Text = 'database' then begin
@@ -256,6 +267,24 @@ end;
 procedure Tmain.About1Click(Sender: TObject);
 begin
   frmAbout.Show;
+end;
+
+procedure Tmain.DeleteMap1Click(Sender: TObject);
+var
+  f : TStrings;
+  i : integer;
+  dir : string;
+begin
+  if lv.ItemIndex = -1 then exit;
+  if MessageDlg('Do you really want to delete map '+lv.ItemFocused.Caption, mtConfirmation, mbOkCancel, 0) = mrOk then begin
+    f := TStringlist.Create;
+    dir := rootdir + '\map\'+lv.ItemFocused.Caption;
+    ListDir(dir, '*', f);
+    for i := 0 to f.Count-1 do
+      DeleteFile(dir+'\'+f[i]);
+    RmDir(dir);
+    tvClick(nil);
+  end;
 end;
 
 end.

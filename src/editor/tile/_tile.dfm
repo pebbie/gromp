@@ -14,6 +14,7 @@ object frmTile: TfrmTile
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
@@ -117,8 +118,22 @@ object frmTile: TfrmTile
           ImageIndex = 13
           OnClick = ToolButton5Click
         end
-        object ToolButton7: TToolButton
+        object ToolButton1: TToolButton
           Left = 203
+          Top = 0
+          Caption = 'ToolButton1'
+          ImageIndex = 9
+          OnClick = ToolButton1Click
+        end
+        object ToolButton12: TToolButton
+          Left = 242
+          Top = 0
+          Caption = 'ToolButton12'
+          ImageIndex = 13
+          OnClick = ToolButton12Click
+        end
+        object ToolButton7: TToolButton
+          Left = 281
           Top = 0
           Width = 8
           Caption = 'ToolButton7'
@@ -126,7 +141,7 @@ object frmTile: TfrmTile
           Style = tbsSeparator
         end
         object ToolButton6: TToolButton
-          Left = 211
+          Left = 289
           Top = 0
           Hint = 'Zoom Out'
           Caption = 'ToolButton6'
@@ -134,7 +149,7 @@ object frmTile: TfrmTile
           OnClick = ToolButton6Click
         end
         object ToolButton8: TToolButton
-          Left = 250
+          Left = 328
           Top = 0
           Hint = 'Zoom In'
           Caption = 'ToolButton8'
@@ -142,7 +157,7 @@ object frmTile: TfrmTile
           OnClick = ToolButton8Click
         end
         object ToolButton9: TToolButton
-          Left = 289
+          Left = 367
           Top = 0
           Hint = 'Reset Zoom'
           Caption = 'ToolButton9'
@@ -150,7 +165,7 @@ object frmTile: TfrmTile
           OnClick = ToolButton9Click
         end
         object ToolButton11: TToolButton
-          Left = 328
+          Left = 406
           Top = 0
           Width = 8
           Caption = 'ToolButton11'
@@ -158,7 +173,7 @@ object frmTile: TfrmTile
           Style = tbsSeparator
         end
         object curcol: TShape
-          Left = 336
+          Left = 414
           Top = 0
           Width = 38
           Height = 38
@@ -197,6 +212,20 @@ object frmTile: TfrmTile
             OnMouseDown = Image2MouseDown
             OnMouseMove = Image2MouseMove
           end
+        end
+        object tbAlpha: TTrackBar
+          Left = 1
+          Top = 145
+          Width = 96
+          Height = 32
+          Align = alTop
+          Max = 100
+          ParentShowHint = False
+          Frequency = 10
+          ShowHint = True
+          TabOrder = 1
+          ThumbLength = 16
+          TickMarks = tmTopLeft
         end
       end
     end

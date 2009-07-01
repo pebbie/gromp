@@ -253,6 +253,7 @@ object frmMap: TfrmMap
     Top = 308
     object Remove1: TMenuItem
       Caption = 'Remove'
+      OnClick = Remove1Click
     end
     object N2: TMenuItem
       Caption = '-'
