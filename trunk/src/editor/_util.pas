@@ -167,7 +167,6 @@ begin
 
   lv.Items.Clear;
   imlist := lv.SmallImages;
-  imlist.Clear;
 
   bmp := TBitmap.Create;
   bmp.Width := imlist.Width;
@@ -185,6 +184,7 @@ begin
             item.Caption := tmp;
 
             pic.LoadFromFile( path + '\' + tmp );
+            bmp.Canvas.FillRect(Bounds(0, 0, bmp.Width, bmp.Height));
             bmp.Canvas.StretchDraw( rect( 0, 0, bmp.Width - 1, bmp.Height - 1 ), pic.Graphic );
             item.ImageIndex := imlist.Add( bmp, nil );
           end
@@ -193,7 +193,7 @@ begin
             if ( ext = '.spr' ) or ( ext = '.map' ) then begin
               item := lv.Items.Add;
               item.Caption := tmp;
-              item.ImageIndex := -1;
+              item.ImageIndex := 0;
             end;
           end;
         end;
