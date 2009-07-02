@@ -251,16 +251,16 @@ object frmMap: TfrmMap
   object ppTileLib: TPopupMenu
     Left = 796
     Top = 308
-    object Remove1: TMenuItem
-      Caption = 'Remove'
-      OnClick = Remove1Click
+    object Import1: TMenuItem
+      Caption = 'Import'
+      OnClick = Import1Click
     end
     object N2: TMenuItem
       Caption = '-'
     end
-    object Import1: TMenuItem
-      Caption = 'Import'
-      OnClick = Import1Click
+    object Remove1: TMenuItem
+      Caption = 'Remove'
+      OnClick = Remove1Click
     end
   end
   object ppLayer: TPopupMenu
@@ -270,23 +270,38 @@ object frmMap: TfrmMap
       Caption = 'New Layer'
       OnClick = NewLayer1Click
     end
-    object DeleteLayer1: TMenuItem
-      Caption = 'Delete Layer'
-    end
     object N1: TMenuItem
       Caption = '-'
     end
-    object toTop1: TMenuItem
-      Caption = 'Front'
+    object Rename1: TMenuItem
+      Caption = 'Rename'
+      OnClick = Rename1Click
     end
-    object MoveUp1: TMenuItem
-      Caption = 'Move Up'
+    object Order1: TMenuItem
+      Caption = 'Order'
+      object toTop1: TMenuItem
+        Caption = 'Front'
+        OnClick = toTop1Click
+      end
+      object MoveUp1: TMenuItem
+        Caption = 'Move Up'
+        OnClick = MoveUp1Click
+      end
+      object MoveDown1: TMenuItem
+        Caption = 'Move Down'
+        OnClick = MoveDown1Click
+      end
+      object Bottom1: TMenuItem
+        Caption = 'Bottom'
+        OnClick = Bottom1Click
+      end
     end
-    object MoveDown1: TMenuItem
-      Caption = 'Move Down'
+    object N3: TMenuItem
+      Caption = '-'
     end
-    object Bottom1: TMenuItem
-      Caption = 'Bottom'
+    object DeleteLayer1: TMenuItem
+      Caption = 'Delete Layer'
+      OnClick = DeleteLayer1Click
     end
   end
 end

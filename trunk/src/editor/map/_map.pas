@@ -110,6 +110,9 @@ type
     Remove1: TMenuItem;
     N2: TMenuItem;
     Import1: TMenuItem;
+    N3: TMenuItem;
+    Rename1: TMenuItem;
+    Order1: TMenuItem;
     procedure layersClick( Sender: TObject );
     procedure FormCreate( Sender: TObject );
     procedure lbTilesDrawItem( Control: TWinControl; Index: Integer;
@@ -131,6 +134,12 @@ type
     procedure Import1Click( Sender: TObject );
     procedure NewLayer1Click( Sender: TObject );
     procedure Remove1Click( Sender: TObject );
+    procedure DeleteLayer1Click(Sender: TObject);
+    procedure toTop1Click(Sender: TObject);
+    procedure Bottom1Click(Sender: TObject);
+    procedure MoveUp1Click(Sender: TObject);
+    procedure MoveDown1Click(Sender: TObject);
+    procedure Rename1Click(Sender: TObject);
   private
     { Private declarations }
     procedure resizemap( nw, nh: integer );
@@ -577,6 +586,8 @@ begin
     map.WriteString( 'layer' + inttostr( layers.ItemIndex ), 'tiles', s.CommaText );
     map.UpdateFile;
     s.Free;
+
+    if lbTiles.ItemIndex = -1 then lbTiles.ItemIndex := lbTiles.Count-1;
   end;
 end;
 
@@ -780,6 +791,251 @@ begin
   end;
   SaveMapClick(nil);
   self.Go(dirname);
+end;
+
+procedure TfrmMap.DeleteLayer1Click(Sender: TObject);
+var
+  l, i : integer;
+  names, tiles: TStrings;
+begin
+  l := layers.ItemIndex;
+  if l = -1 then exit;
+  if layers.Count=1 then begin
+    MessageDlg('Cannot delete layer. Minimum number of layers in a map is 1', mtInformation, [mbOK], 0);
+    exit;
+  end;
+
+  names := TStringlist.Create;
+  tiles := TStringlist.Create;
+
+  for i := 0 to layers.Count-1 do begin
+    names.Add(map.ReadString('layer'+inttostr(i), 'name', ''));
+    tiles.Add(map.ReadString('layer'+inttostr(i), 'tiles', ''));
+  end;
+
+  map.WriteInteger('map', 'numlayer', layers.Count-1);
+  for i := l to layers.Count-2 do begin
+    map.WriteString('layer'+inttostr(i), 'name', names[i+1]);
+    map.WriteString('layer'+inttostr(i), 'tiles', tiles[i+1]);
+  end;
+  map.UpdateFile;
+
+  names.Free;
+  tiles.Free;  
+  go(dirname);
+end;
+
+procedure TfrmMap.toTop1Click(Sender: TObject);
+var
+  l, i : integer;
+  tmp : string;
+  names, tiles, map1, map2: TStrings;
+begin
+  //move to layerCount-1
+  l := layers.ItemIndex;
+  if (l = -1) or (l=layers.Count-1) then exit;
+
+  names := TStringlist.Create;
+  tiles := TStringlist.Create;
+  map1 := TStringlist.Create;
+  map2 := TStringlist.Create;
+
+  for i := 0 to layers.Count-1 do begin
+    names.Add(map.ReadString('layer'+inttostr(i), 'name', ''));
+    tiles.Add(map.ReadString('layer'+inttostr(i), 'tiles', ''));
+  end;
+
+  for i := l to layers.Count-2 do begin
+    //swap name
+    tmp := names[i];
+    names[i] := names[i+1];
+    names[i+1] := tmp;
+    //swap tiles
+    tmp := tiles[i];
+    tiles[i] := tiles[i+1];
+    tiles[i+1] := tmp;
+    //swap file
+    map1.LoadFromFile(dirname+'\map'+inttostr(i)+'.map');
+    map2.LoadFromFile(dirname+'\map'+inttostr(i+1)+'.map');
+    map1.SaveToFile(dirname+'\map'+inttostr(i+1)+'.map');
+    map2.SaveToFile(dirname+'\map'+inttostr(i)+'.map');
+    //save
+    map.WriteString('layer'+inttostr(i), 'name', names[i]);
+    map.WriteString('layer'+inttostr(i), 'tiles', tiles[i]);
+  end;
+  i := layers.Count-1;
+  map.WriteString('layer'+inttostr(i), 'name', names[i]);
+  map.WriteString('layer'+inttostr(i), 'tiles', tiles[i]);
+  map.UpdateFile;
+
+  names.Free;
+  tiles.Free;
+  map1.Free;
+  map2.Free;
+  go(dirname);
+end;
+
+procedure TfrmMap.Bottom1Click(Sender: TObject);
+var
+  l, i : integer;
+  tmp : string;
+  names, tiles, map1, map2: TStrings;
+begin
+  //move to 0
+  l := layers.ItemIndex;
+  if (l = -1) or (l=0) then exit;
+
+  names := TStringlist.Create;
+  tiles := TStringlist.Create;
+  map1 := TStringlist.Create;
+  map2 := TStringlist.Create;
+
+  for i := 0 to layers.Count-1 do begin
+    names.Add(map.ReadString('layer'+inttostr(i), 'name', ''));
+    tiles.Add(map.ReadString('layer'+inttostr(i), 'tiles', ''));
+  end;
+
+  for i := l downto 1 do begin
+    //swap name
+    tmp := names[i];
+    names[i] := names[i-1];
+    names[i-1] := tmp;
+    //swap tiles
+    tmp := tiles[i];
+    tiles[i] := tiles[i-1];
+    tiles[i-1] := tmp;
+    //swap file
+    map1.LoadFromFile(dirname+'\map'+inttostr(i)+'.map');
+    map2.LoadFromFile(dirname+'\map'+inttostr(i-1)+'.map');
+    map1.SaveToFile(dirname+'\map'+inttostr(i-1)+'.map');
+    map2.SaveToFile(dirname+'\map'+inttostr(i)+'.map');
+    //save
+    map.WriteString('layer'+inttostr(i), 'name', names[i]);
+    map.WriteString('layer'+inttostr(i), 'tiles', tiles[i]);
+  end;
+  i := 0;
+  map.WriteString('layer'+inttostr(i), 'name', names[i]);
+  map.WriteString('layer'+inttostr(i), 'tiles', tiles[i]);
+  map.UpdateFile;
+
+  names.Free;
+  tiles.Free;
+  map1.Free;
+  map2.Free;
+  go(dirname);
+end;
+
+procedure TfrmMap.MoveUp1Click(Sender: TObject);
+var
+  l, i : integer;
+  tmp : string;
+  names, tiles, map1, map2: TStrings;
+begin
+  //move to layerCount-1
+  l := layers.ItemIndex;
+  if (l = -1) or (l=layers.Count-1) then exit;
+
+  names := TStringlist.Create;
+  tiles := TStringlist.Create;
+  map1 := TStringlist.Create;
+  map2 := TStringlist.Create;
+
+  for i := 0 to layers.Count-1 do begin
+    names.Add(map.ReadString('layer'+inttostr(i), 'name', ''));
+    tiles.Add(map.ReadString('layer'+inttostr(i), 'tiles', ''));
+  end;
+
+  i := l;
+
+    //swap name
+    tmp := names[i];
+    names[i] := names[i+1];
+    names[i+1] := tmp;
+    //swap tiles
+    tmp := tiles[i];
+    tiles[i] := tiles[i+1];
+    tiles[i+1] := tmp;
+    //swap file
+    map1.LoadFromFile(dirname+'\map'+inttostr(i)+'.map');
+    map2.LoadFromFile(dirname+'\map'+inttostr(i+1)+'.map');
+    map1.SaveToFile(dirname+'\map'+inttostr(i+1)+'.map');
+    map2.SaveToFile(dirname+'\map'+inttostr(i)+'.map');
+    //save
+    map.WriteString('layer'+inttostr(i), 'name', names[i]);
+    map.WriteString('layer'+inttostr(i), 'tiles', tiles[i]);
+    map.WriteString('layer'+inttostr(i+1), 'name', names[i+1]);
+    map.WriteString('layer'+inttostr(i+1), 'tiles', tiles[i+1]);
+
+  map.UpdateFile;
+
+  names.Free;
+  tiles.Free;
+  map1.Free;
+  map2.Free;
+  go(dirname);
+  //+1
+end;
+
+procedure TfrmMap.MoveDown1Click(Sender: TObject);
+var
+  l, i : integer;
+  tmp : string;
+  names, tiles, map1, map2: TStrings;
+begin
+  l := layers.ItemIndex;
+  if (l = -1) or (l=0) then exit;
+
+  names := TStringlist.Create;
+  tiles := TStringlist.Create;
+  map1 := TStringlist.Create;
+  map2 := TStringlist.Create;
+
+  for i := 0 to layers.Count-1 do begin
+    names.Add(map.ReadString('layer'+inttostr(i), 'name', ''));
+    tiles.Add(map.ReadString('layer'+inttostr(i), 'tiles', ''));
+  end;
+
+    i := l;
+    //swap name
+    tmp := names[i];
+    names[i] := names[i-1];
+    names[i-1] := tmp;
+    //swap tiles
+    tmp := tiles[i];
+    tiles[i] := tiles[i-1];
+    tiles[i-1] := tmp;
+    //swap file
+    map1.LoadFromFile(dirname+'\map'+inttostr(i)+'.map');
+    map2.LoadFromFile(dirname+'\map'+inttostr(i-1)+'.map');
+    map1.SaveToFile(dirname+'\map'+inttostr(i-1)+'.map');
+    map2.SaveToFile(dirname+'\map'+inttostr(i)+'.map');
+    //save
+    map.WriteString('layer'+inttostr(i), 'name', names[i]);
+    map.WriteString('layer'+inttostr(i), 'tiles', tiles[i]);
+    map.WriteString('layer'+inttostr(i-1), 'name', names[i-1]);
+    map.WriteString('layer'+inttostr(i-1), 'tiles', tiles[i-1]);
+
+  map.UpdateFile;
+
+  names.Free;
+  tiles.Free;
+  map1.Free;
+  map2.Free;
+  go(dirname);
+  //-1
+end;
+
+procedure TfrmMap.Rename1Click(Sender: TObject);
+var
+  i : integer;
+begin
+  //rename
+  i := layers.ItemIndex;
+  
+  layers.Items[i] := InputBox('layer Name', 'Rename Layer', layers.Items[i]);
+
+  map.WriteString('layer'+inttostr(i), 'name', layers.Items[i]);
+  map.UpdateFile;
 end;
 
 end.
