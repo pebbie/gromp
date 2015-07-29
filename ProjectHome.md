@@ -1,0 +1,1 @@
+a tool to develop a 2D RPG game. including content creation (tiles, layered maps, animated sprites, Bitmap Fonts, GUIs, scripts).
